@@ -15,18 +15,16 @@ fn main() -> Result<(), Box<dyn Error>> {
 
   println!("{}", part_one(inputs.clone()));
   println!("{}", part_two(inputs.clone()));
+
   Ok(())
 }
 
 pub fn part_one_mask(mask: &Vec<Option<bool>>, val: u64) -> u64 {
   let value = mask.iter()
       .enumerate()
-      .map(|(i, v)| {
-        let index = mask.len() - 1 - i;
-        match v {
-          None => (val >> index) & 0b1,
-          Some(n) => *n as u64
-        }
+      .map(|(i, v)| match v {
+        None => (val >> mask.len() - 1 - i) & 0b1,
+        Some(n) => *n as u64
       })
       .map(|n| n.to_string())
       .collect::<Vec<String>>().join("");
@@ -37,42 +35,45 @@ pub fn part_one_mask(mask: &Vec<Option<bool>>, val: u64) -> u64 {
 pub fn part_two_mask(mask: &Vec<Option<bool>>, val: u64) -> Vec<u64> {
   let addrs = mask.iter()
       .enumerate()
-      .map(|(i, v)| {
-        let index = mask.len() - 1 - i;
-        match v {
-          None => None,
-          Some(n) => match *n {
-            true => Some(1),
-            false => Some((val >> index) & 0b1)
-          }
+      .map(|(i, v)| match v {
+        None => None,
+        Some(n) => match *n {
+          true => Some(1),
+          false => Some((val >> mask.len() - 1 - i) & 0b1)
         }
       }).collect::<Vec<Option<_>>>();
 
   let floating_indices = addrs.iter()
       .enumerate()
-      .map(|(_index, bit)| (_index, bit.is_none()))
-      .filter(|&(_index, is_floating)| is_floating)
+      .filter_map(|(index, bit)|
+          if bit.is_none() {
+            Some(index)
+          } else {
+            None
+          })
       .collect::<Vec<_>>();
 
-  let bits_to_apply = (0..1 << floating_indices.len())
+  let enumerate_addresses = (0..1 << floating_indices.len())
       .map(|bits| {
         let mut current_bit = floating_indices.len();
         let mut num = addrs.clone();
 
-        for (index, _) in &floating_indices {
+        for index in &floating_indices {
           num[*index] = Some((bits >> current_bit - 1) & 1);
           current_bit -= 1;
         }
+
         num
       }).collect::<Vec<_>>();
 
-  let addresses = bits_to_apply.iter().map(|item| {
-    let bitstring = item.iter()
-        .map(|k| k.unwrap().to_string())
-        .collect::<Vec<String>>()
-        .join("");
-    u64::from_str_radix(&bitstring, 2).unwrap()
-  }).collect::<Vec<_>>();
+  let addresses = enumerate_addresses.iter()
+      .map(|item| {
+        let bitstring = item.iter()
+            .map(|k| k.unwrap().to_string())
+            .collect::<Vec<String>>()
+            .join("");
+        u64::from_str_radix(&bitstring, 2).unwrap()
+      }).collect::<Vec<_>>();
 
   addresses
 }
@@ -80,6 +81,7 @@ pub fn part_two_mask(mask: &Vec<Option<bool>>, val: u64) -> Vec<u64> {
 fn part_one(inputs: Vec<MaskOrMem>) -> u64 {
   let mut memory = HashMap::new();
   let mut current_mask = Vec::new();
+
   for input in inputs {
     match input {
       Mask(mask) => current_mask = mask,
@@ -96,6 +98,7 @@ fn part_one(inputs: Vec<MaskOrMem>) -> u64 {
 fn part_two(inputs: Vec<MaskOrMem>) -> u64 {
   let mut memory = HashMap::new();
   let mut current_mask = Vec::new();
+
   for input in inputs {
     match input {
       Mask(mask) => current_mask = mask,
