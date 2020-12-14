@@ -3,7 +3,6 @@ use std::fs::File;
 use std::io::{Read};
 use std::collections::HashMap;
 use crate::MaskOrMem::{Mask, Mem};
-use itertools::Itertools;
 
 #[derive(Clone)]
 pub enum MaskOrMem {
@@ -61,18 +60,19 @@ pub fn part_two_mask(mask: &Vec<Option<bool>>, val: u64) -> Vec<u64> {
         let mut num = addrs.clone();
 
         for (index, _) in &floating_indices {
-          num[*index] = Some((bits >> current_bit -1) & 1);
+          num[*index] = Some((bits >> current_bit - 1) & 1);
           current_bit -= 1;
         }
         num
-      }).collect_vec();
+      }).collect::<Vec<_>>();
 
   let addresses = bits_to_apply.iter().map(|item| {
     let bitstring = item.iter()
-        .map(|k|k.unwrap().to_string())
+        .map(|k| k.unwrap().to_string())
+        .collect::<Vec<String>>()
         .join("");
     u64::from_str_radix(&bitstring, 2).unwrap()
-  }).collect_vec();
+  }).collect::<Vec<_>>();
 
   addresses
 }
