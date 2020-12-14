@@ -51,8 +51,8 @@ pub fn part_two_mask(mask: &Vec<Option<bool>>, val: u64) -> Vec<u64> {
 
   let floating_indices = addrs.iter()
       .enumerate()
-      .map(|(index, bit)| (index, bit.is_none()))
-      .filter(|&(index, is_floating)| is_floating)
+      .map(|(_index, bit)| (_index, bit.is_none()))
+      .filter(|&(_index, is_floating)| is_floating)
       .collect::<Vec<_>>();
 
   let bits_to_apply = (0..1 << floating_indices.len())
