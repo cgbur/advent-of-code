@@ -23,15 +23,15 @@ fn main() -> Result<(), Box<dyn Error>> {
             .map(|(trees, index)| trees[index] as u32)
             .sum::<u32>();
 
-        ((dx, dy), crashes)
+        crashes
       }).collect::<Vec<_>>();
 
   let part_one = crashes.get(1).unwrap();
-  let part_two = crashes.iter().fold(1, |acc, ((_, _), crashes)| acc * *crashes);
+  let part_two = crashes.iter().fold(1, |acc, crashes| acc * *crashes);
 
-  println!("{:?}", part_one.1);
+  println!("{:?}", part_one);
   println!("{}", part_two);
-  
+
   Ok(())
 }
 
