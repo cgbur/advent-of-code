@@ -6,8 +6,8 @@ use std::collections::HashMap;
 fn main() -> Result<(), Box<dyn Error>> {
   let inputs = parse_input()?;
 
-  println!("{:?}", van_eck(&inputs, 2020));
-  println!("{:?}", van_eck(&inputs, 30_000_000));
+  println!("{}", van_eck(&inputs, 2020));
+  println!("{}", van_eck(&inputs, 30_000_000));
 
   Ok(())
 }
@@ -18,8 +18,8 @@ fn van_eck(inputs: &Vec<usize>, num_rounds: usize) -> usize {
       .map(|(idx, &val)| (val, idx + 1))
       .collect::<HashMap<_, _>>();
 
-  let last_seen = *inputs.last().unwrap();
-  (inputs.len()..num_rounds).fold(last_seen, |last_seen, turn| turn - seen.insert(last_seen, turn).unwrap_or(turn))
+  let last = *inputs.last().unwrap();
+  (inputs.len()..num_rounds).fold(last, |last, turn| turn - seen.insert(last, turn).unwrap_or(turn))
 }
 
 fn parse_input() -> Result<Vec<usize>, std::io::Error> {
