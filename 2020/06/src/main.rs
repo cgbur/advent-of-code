@@ -18,8 +18,7 @@ fn main() -> Result<(), Box<dyn Error>> {
       .sum::<u32>();
 
   let part_two = inputs.iter()
-      .map(|group| group
-          .iter()
+      .map(|group| group.iter()
           .fold(HashMap::with_capacity(26), |mut acc, votes| {
             for vote in votes {
               let counter = acc.entry(vote).or_insert(0);
@@ -31,7 +30,7 @@ fn main() -> Result<(), Box<dyn Error>> {
           .filter(|&&count| count == group.len())
           .count() as u32
       ).sum::<u32>();
-  
+
   println!("{:?}", part_one);
   println!("{:?}", part_two);
   Ok(())
