@@ -19,8 +19,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 
   let part_two = inputs.iter()
       .map(|group| group.iter()
-          .fold(HashMap::with_capacity(26), |mut acc, votes| {
-            for vote in votes {
+          .fold(HashMap::with_capacity(26), |mut acc, person| {
+            for vote in person {
               let counter = acc.entry(vote).or_insert(0);
               *counter += 1;
             }
@@ -33,7 +33,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
   println!("{:?}", part_one);
   println!("{:?}", part_two);
-  
+
   Ok(())
 }
 
