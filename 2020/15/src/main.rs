@@ -12,39 +12,24 @@ fn main() -> Result<(), Box<dyn Error>> {
   Ok(())
 }
 
-fn van_eck(inputs: &Vec<u32>, num_rounds: u32) -> u32 {
-  let turn_start = (inputs.len() - 1) as u32;
-  let turn_end = num_rounds - 1;
+fn van_eck(inputs: &Vec<usize>, num_rounds: usize) -> usize {
+  let mut seen = inputs.iter()
+      .enumerate()
+      .map(|(idx, &val)| (val, idx + 1))
+      .collect::<HashMap<_, _>>();
 
-  let mut memory = HashMap::new();
-
-  for (idx, num) in inputs.iter().enumerate() {
-    memory.insert(*num, idx as u32);
-  }
-
-  let mut last_spoken = *inputs.last().unwrap();
-
-  for turn in turn_start..turn_end {
-    let last = memory.entry(last_spoken).or_insert(turn);
-    if *last == turn {
-      last_spoken = 0;
-    } else {
-      last_spoken = turn - *last;
-      *last = turn;
-    }
-  }
-
-  *memory.entry(last_spoken).key()
+  let last_seen = *inputs.last().unwrap();
+  (inputs.len()..num_rounds).fold(last_seen, |last_seen, turn| turn - seen.insert(last_seen, turn).unwrap_or(turn))
 }
 
-fn parse_input() -> Result<Vec<u32>, std::io::Error> {
+fn parse_input() -> Result<Vec<usize>, std::io::Error> {
   let mut input = String::new();
   File::open("./input/problem")?.read_to_string(&mut input)?;
 
   let read = input
       .split(",")
       .map(|s| s.to_string())
-      .map(|s| s.parse::<u32>().unwrap())
+      .map(|s| s.parse::<usize>().unwrap())
       .collect();
 
   Ok(read)
