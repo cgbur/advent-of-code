@@ -11,4 +11,4 @@ itertools = "0.9.0"
 
 [[bin]]
 name = "with_itertools"
-path = "src/with_itertools.rs"
+path = "src/main.rs"
