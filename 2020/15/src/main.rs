@@ -1,7 +1,7 @@
+use std::collections::HashMap;
 use std::error::Error;
 use std::fs::File;
 use std::io::Read;
-use std::collections::HashMap;
 
 fn main() -> Result<(), Box<dyn Error>> {
   let inputs = parse_input()?;
@@ -13,13 +13,16 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn van_eck(inputs: &Vec<usize>, num_rounds: usize) -> usize {
-  let mut seen = inputs.iter()
-      .enumerate()
-      .map(|(idx, &val)| (val, idx + 1))
-      .collect::<HashMap<_, _>>();
+  let mut seen = inputs
+    .iter()
+    .enumerate()
+    .map(|(idx, &val)| (val, idx + 1))
+    .collect::<HashMap<_, _>>();
 
   let last = *inputs.last().unwrap();
-  (inputs.len()..num_rounds).fold(last, |last, turn| turn - seen.insert(last, turn).unwrap_or(turn))
+  (inputs.len()..num_rounds).fold(last, |last, turn| {
+    turn - seen.insert(last, turn).unwrap_or(turn)
+  })
 }
 
 fn parse_input() -> Result<Vec<usize>, std::io::Error> {
@@ -27,10 +30,10 @@ fn parse_input() -> Result<Vec<usize>, std::io::Error> {
   File::open("./input/problem")?.read_to_string(&mut input)?;
 
   let read = input
-      .split(",")
-      .map(|s| s.to_string())
-      .map(|s| s.parse::<usize>().unwrap())
-      .collect();
+    .split(",")
+    .map(|s| s.to_string())
+    .map(|s| s.parse::<usize>().unwrap())
+    .collect();
 
   Ok(read)
 }
