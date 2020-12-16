@@ -6,9 +6,8 @@ use itertools::Itertools;
 fn find_combo_mul(nums: &Vec<u32>, n: usize, target: u32) -> u32 {
   nums.iter()
       .combinations(n)
-      .find(|group| group.iter().map(|n| **n).sum::<u32>() == target)
-      .unwrap()
-      .iter().map(|n| **n)
+      .find(|group| group.iter().cloned().sum::<u32>() == target)
+      .unwrap().iter().cloned()
       .product::<u32>()
 }
 
