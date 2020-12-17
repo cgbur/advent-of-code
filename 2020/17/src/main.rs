@@ -60,12 +60,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 
       for neighbor in neighbors {
         let (active, _) = state.entry(neighbor).or_insert((false, false));
-        if *active {
-          active_count += 1
-        }
-        if active_count > 3 {
-          break;
-        }
+        if *active { active_count += 1 }
+        if active_count > 3 { break; }
       }
 
       let (is_current_active, next_active) =
@@ -106,7 +102,7 @@ fn parse_input() -> Result<HashMap<Cube, Activity>, std::io::Error> {
 
   let dim_len = active_map.len();
 
-  let mut state = gen_cartesian(2, 0, (dim_len - 1) as isize).map(|dim|{
+  let mut state = gen_cartesian(2, 0, (dim_len - 1) as isize).map(|dim| {
     let x = dim[0];
     let y = dim[1];
 
@@ -114,8 +110,8 @@ fn parse_input() -> Result<HashMap<Cube, Activity>, std::io::Error> {
     dim[0] = x;
     dim[1] = y;
 
-    (Cube{dim}, (active_map[y as usize][x as usize], false))
-  }).collect::<HashMap<_,_>>();
+    (Cube { dim }, (active_map[y as usize][x as usize], false))
+  }).collect::<HashMap<_, _>>();
 
 
   let current_cubes = state.keys().cloned().collect_vec();
