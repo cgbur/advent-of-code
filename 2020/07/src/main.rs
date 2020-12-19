@@ -6,6 +6,11 @@ const LINE_ENDING: &'static str = "\r\n";
 #[cfg(not(windows))]
 const LINE_ENDING: &'static str = "\n";
 
+// Very overkill implementation for day 7. Should just use
+// an adjacency list of (node, vec![(size, node)].
+// Wanting something like Neo4j. I couldn't recall how they
+// implemented their dict (set or table? hindsight table would
+// have worked better). 
 mod graph;
 
 fn main() -> Result<(), Box<dyn Error>> {
