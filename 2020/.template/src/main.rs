@@ -4,9 +4,9 @@ use std::fs::File;
 use std::io::Read;
 
 #[cfg(windows)]
-const LINE_ENDING: &'static str = "\r\n";
+const LINE_ENDING: &str = "\r\n";
 #[cfg(not(windows))]
-const LINE_ENDING: &'static str = "\n";
+const LINE_ENDING: &str = "\n";
 
 fn main() -> Result<(), Box<dyn Error>> {
   let inputs = parse_input()?;
