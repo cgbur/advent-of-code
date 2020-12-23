@@ -5,9 +5,11 @@ use std::fs::File;
 use std::io::Read;
 
 #[cfg(windows)]
-const LINE_ENDING: &'static str = "\r\n";
+const LINE_ENDING: &str = "\r\n";
 #[cfg(not(windows))]
-const LINE_ENDING: &'static str = "\n";
+const LINE_ENDING: &str = "\n";
+
+type OccupiedMapper = Box<dyn Fn(&[Vec<Seat>]) -> Vec<Vec<i32>>>;
 
 const NEIGHBORS: [(isize, isize); 8] = [
   (-1, -1),
@@ -27,7 +29,7 @@ enum Seat {
   Taken,
 }
 
-fn occupied_mapper(version: &str) -> Box<dyn Fn(&[Vec<Seat>]) -> Vec<Vec<i32>>> {
+fn occupied_chooser(version: &str) -> OccupiedMapper {
   let occupied_searcher = match version {
     "p1" => occupied_p1,
     "p2" => occupied_p2,
@@ -42,11 +44,8 @@ fn occupied_mapper(version: &str) -> Box<dyn Fn(&[Vec<Seat>]) -> Vec<Vec<i32>>> 
 
     for y in 0..height {
       for x in 0..width {
-        match seats[y][x] {
-          Taken => {
-            occupied_searcher(seats, &mut occupied, x, y, width, height);
-          }
-          _ => {}
+        if let Taken = seats[y][x] {
+          occupied_searcher(seats, &mut occupied, x, y, width, height);
         }
       }
     }
@@ -99,11 +98,7 @@ fn occupied_p2(
   }
 }
 
-fn seat_sim(
-  mut seats: Vec<Vec<Seat>>,
-  tolerance: i32,
-  occupied_fn: Box<dyn Fn(&[Vec<Seat>]) -> Vec<Vec<i32>>>,
-) -> usize {
+fn seat_sim(mut seats: Vec<Vec<Seat>>, tolerance: i32, occupied_fn: OccupiedMapper) -> usize {
   let height = seats.len();
   let width = seats[0].len();
 
@@ -138,15 +133,15 @@ fn seat_sim(
   seats
     .iter()
     .flatten()
-    .filter(|&seat| if let Taken = seat { true } else { false })
+    .filter(|&seat| matches!(seat, Taken))
     .count()
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
   let seats = parse_input()?;
 
-  let part_one = seat_sim(seats.clone(), 4, occupied_mapper("p1"));
-  let part_two = seat_sim(seats.clone(), 5, occupied_mapper("p2"));
+  let part_one = seat_sim(seats.clone(), 4, occupied_chooser("p1"));
+  let part_two = seat_sim(seats, 5, occupied_chooser("p2"));
 
   println!("{:?}", part_one);
   println!("{:?}", part_two);
