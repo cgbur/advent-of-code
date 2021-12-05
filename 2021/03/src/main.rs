@@ -49,7 +49,7 @@ impl Board {
         for y in 0..self.size {
             let mut won = true;
             for x in 0..self.size {
-                if self.hits[y][x] == false {
+                if !self.hits[y][x] {
                     won = false;
                     break;
                 }
@@ -65,7 +65,7 @@ impl Board {
         for x in 0..self.size {
             let mut won = true;
             for y in 0..self.size {
-                if self.hits[y][x] == false {
+                if !self.hits[y][x] {
                     won = false;
 
                     break;
@@ -91,7 +91,7 @@ impl Board {
 fn main() -> Result<(), Box<dyn Error>> {
     let (numbers, boards) = parse_input()?;
 
-    println!("{}", part_one(&numbers.clone(), &mut boards.clone()));
+    println!("{}", part_one(&numbers, &mut boards.clone()));
     println!("{}", part_two(&numbers, boards));
     Ok(())
 }
@@ -134,7 +134,7 @@ fn parse_input() -> Result<(Vec<u32>, Vec<Board>), Box<dyn Error>> {
     let numbers = splits_iter
         .next()
         .unwrap()
-        .split(",")
+        .split(',')
         .map(|num| num.parse::<u32>().unwrap())
         .collect_vec();
 
@@ -148,7 +148,7 @@ fn parse_input() -> Result<(Vec<u32>, Vec<Board>), Box<dyn Error>> {
                 })
                 .collect_vec()
         })
-        .map(|board| Board::new(board))
+        .map(Board::new)
         .collect_vec();
 
     Ok((numbers, boards))
