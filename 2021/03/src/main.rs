@@ -67,7 +67,6 @@ impl Board {
             for y in 0..self.size {
                 if !self.hits[y][x] {
                     won = false;
-
                     break;
                 }
             }
