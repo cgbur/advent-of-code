@@ -16,7 +16,7 @@ impl Board {
     pub fn new(board: Vec<Vec<u32>>) -> Self {
         let hits = board
             .iter()
-            .map(|row| row.iter().map(|num| false).collect_vec())
+            .map(|row| row.iter().map(|_num| false).collect_vec())
             .collect_vec();
 
         Self {
@@ -89,7 +89,7 @@ impl Board {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let (numbers, mut boards) = parse_input()?;
+    let (numbers, boards) = parse_input()?;
 
     println!("{}", part_one(&numbers.clone(), &mut boards.clone()));
     println!("{}", part_two(&numbers, boards));
