@@ -1,93 +1,155 @@
-use core::panic;
+use advent_util::LINE_ENDING;
 use itertools::Itertools;
 use std::error::Error;
 use std::fs::File;
 use std::io::Read;
 
-/// Not my finest hour
+#[derive(Debug, Clone)]
+struct Board {
+    numbers: Vec<Vec<u32>>,
+    hits: Vec<Vec<bool>>,
+    size: usize,
+    disabled: bool,
+}
+
+impl Board {
+    pub fn new(board: Vec<Vec<u32>>) -> Self {
+        let hits = board
+            .iter()
+            .map(|row| row.iter().map(|num| false).collect_vec())
+            .collect_vec();
+
+        Self {
+            size: board.len(),
+            numbers: board,
+            hits,
+            disabled: false,
+        }
+    }
+
+    pub fn play(&mut self, num: u32) {
+        for y in 0..self.size {
+            for x in 0..self.size {
+                if self.numbers[y][x] == num {
+                    self.hits[y][x] = true;
+                }
+            }
+        }
+    }
+
+    pub fn disable(&mut self) {
+        self.disabled = true;
+    }
+
+    pub fn won(&self) -> bool {
+        !self.disabled && (self.won_horizontal() || self.won_vertical())
+    }
+
+    fn won_vertical(&self) -> bool {
+        for y in 0..self.size {
+            let mut won = true;
+            for x in 0..self.size {
+                if self.hits[y][x] == false {
+                    won = false;
+                    break;
+                }
+            }
+            if won {
+                return won;
+            }
+        }
+        false
+    }
+
+    fn won_horizontal(&self) -> bool {
+        for x in 0..self.size {
+            let mut won = true;
+            for y in 0..self.size {
+                if self.hits[y][x] == false {
+                    won = false;
+
+                    break;
+                }
+            }
+            if won {
+                return won;
+            }
+        }
+        false
+    }
+
+    pub fn score(&self) -> u32 {
+        self.numbers
+            .iter()
+            .flatten()
+            .zip(self.hits.iter().flatten())
+            .filter_map(|(num, hit)| if !hit { Some(num) } else { None })
+            .sum()
+    }
+}
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let inputs = parse_input()?;
+    let (numbers, mut boards) = parse_input()?;
 
-    println!("{}", part_one(&inputs));
-    println!("{}", part_two(&inputs));
-
+    println!("{}", part_one(&numbers.clone(), &mut boards.clone()));
+    println!("{}", part_two(&numbers, boards));
     Ok(())
 }
 
-fn part_one(inputs: &[Vec<u8>]) -> usize {
-    let gamma = (0..inputs[0].len())
-        .map(|idx| inputs.iter().map(move |inner| inner[idx]).collect_vec())
-        .map(|bits| zero_or_one(&bits).to_string())
-        .join("");
-
-    let size = gamma.len() as u32;
-    let gamma = usize::from_str_radix(&gamma, 2).unwrap();
-    let epsilon = !(gamma << (usize::BITS - size)) >> (usize::BITS - size);
-
-    gamma * epsilon
-}
-
-fn part_two(inputs: &[Vec<u8>]) -> usize {
-    let oxygen = part_two_helper(inputs, true);
-    let co2 = part_two_helper(inputs, false);
-
-    let oxygen = usize::from_str_radix(&oxygen, 2).unwrap();
-    let co2 = usize::from_str_radix(&co2, 2).unwrap();
-
-    oxygen * co2
-}
-
-fn part_two_helper(inputs: &[Vec<u8>], is_max: bool) -> String {
-    let mut inputs = inputs.iter().cloned().collect_vec();
-    let mut index = 0;
-
-    while inputs.len() > 1 {
-        let mut common_bit = zero_or_one(&inputs.iter().map(|vec| vec[index]).collect_vec());
-
-        if !is_max {
-            common_bit = !(common_bit == 1) as u8
-        }
-
-        let remove_positions = inputs
-            .iter()
-            .positions(|bits| bits[index] == common_bit)
-            .rev()
-            .collect_vec();
-
-        inputs = inputs
-            .iter()
-            .enumerate()
-            .filter(|(idx, _val)| remove_positions.contains(idx))
-            .map(|(_a, b)| b.clone())
-            .collect_vec();
-
-        index += 1;
-    }
-
-    inputs[0].iter().join("")
-}
-
-fn zero_or_one(numbers: &[u8]) -> u8 {
-    let mut zero = 0;
-    let mut one = 0;
-    for num in numbers {
-        match num {
-            0 => zero += 1,
-            1 => one += 1,
-            _ => panic!("sef"),
+fn part_one(numbers: &[u32], boards: &mut [Board]) -> u32 {
+    for &number in numbers {
+        boards.iter_mut().for_each(|board| board.play(number));
+        if let Some(board) = boards.iter().find(|board| board.won()) {
+            return number * board.score();
         }
     }
 
-    (one >= zero) as u8
+    panic!("Nobody wins???")
 }
 
-fn parse_input() -> Result<Vec<Vec<u8>>, std::io::Error> {
+fn part_two(numbers: &[u32], mut boards: Vec<Board>) -> u32 {
+    let mut last_score = 0;
+
+    for &number in numbers {
+        boards.iter_mut().for_each(|board| board.play(number));
+        for board in boards.iter_mut().filter(|board| board.won()) {
+            board.disable();
+            last_score = number * board.score();
+        }
+    }
+
+    last_score
+}
+
+fn parse_input() -> Result<(Vec<u32>, Vec<Board>), Box<dyn Error>> {
     let mut input = String::new();
     File::open("./input")?.read_to_string(&mut input)?;
 
-    Ok(input
-        .lines()
-        .map(|line| line.chars().map(|c| c as u8 - b'0').collect_vec())
-        .collect_vec())
+    let splits = input
+        .split(&format!("{}{}", LINE_ENDING, LINE_ENDING))
+        .collect_vec();
+
+    let mut splits_iter = splits.iter();
+
+    let numbers = splits_iter
+        .next()
+        .unwrap()
+        .split(",")
+        .map(|num| num.parse::<u32>().unwrap())
+        .collect_vec();
+
+    let boards = splits_iter
+        .map(|num| {
+            num.lines()
+                .map(|line| {
+                    line.split_whitespace()
+                        .map(|c| c.parse::<u32>().unwrap())
+                        .collect_vec()
+                })
+                .collect_vec()
+        })
+        .map(|board| Board::new(board))
+        .collect_vec();
+
+    Ok((numbers, boards))
 }
