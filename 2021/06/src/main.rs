@@ -1,4 +1,3 @@
-use itertools::Itertools;
 use std::error::Error;
 use std::fs::File;
 use std::io::Read;
@@ -30,18 +29,14 @@ fn parse_input() -> Result<[u64; FISHY_SIZE], std::io::Error> {
     let mut input = String::new();
     File::open("./input")?.read_to_string(&mut input)?;
 
-    let mut fish_counts = [0; FISHY_SIZE];
-    let fishies = input
+    Ok(input
         .lines()
         .next()
         .unwrap()
         .split(',')
         .map(|s| s.parse::<u64>().unwrap())
-        .collect_vec();
-
-    for f in fishies {
-        fish_counts[f as usize] += 1;
-    }
-
-    Ok(fish_counts)
+        .fold([0; FISHY_SIZE], |mut acc, val| {
+            acc[val as usize] += 1;
+            acc
+        }))
 }
