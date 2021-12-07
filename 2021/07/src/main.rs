@@ -1,5 +1,4 @@
 use itertools::Itertools;
-use std::collections::HashMap;
 use std::error::Error;
 use std::fs::File;
 use std::io::Read;
@@ -8,50 +7,30 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut input = String::new();
     File::open("./input")?.read_to_string(&mut input)?;
 
-    let crabs = input.split(',').map(|c| c.parse().unwrap()).collect_vec();
+    let crabs: Vec<i32> = input.split(',').map(|c| c.parse().unwrap()).collect_vec();
 
-    let crab_map = crabs.iter().fold(HashMap::new(), |mut acc, val| {
-        *acc.entry(*val).or_insert(0) += 1;
-        acc
-    });
+    let min_crab = *crabs.iter().min().unwrap();
+    let max_crab = *crabs.iter().max().unwrap();
 
-    println!("{}", best_position(&crabs, &crab_map, cost));
-    println!("{}", best_position(&crabs, &crab_map, cost_two));
+    let geom_sum = |n| (n * (n + 1)) / 2;
+
+    let part_one: i32 = (min_crab..=max_crab)
+        .map(|dest| crabs.iter().map(|position| (position - dest).abs()).sum())
+        .min()
+        .unwrap();
+
+    let part_two: i32 = (min_crab..=max_crab)
+        .map(|dest| {
+            crabs
+                .iter()
+                .map(|position| geom_sum((position - dest).abs()))
+                .sum()
+        })
+        .min()
+        .unwrap();
+
+    println!("{}", part_one);
+    println!("{}", part_two);
 
     Ok(())
-}
-
-fn best_position(
-    crabs: &[u32],
-    crab_map: &HashMap<u32, u32>,
-    cost_fn: impl Fn(usize, &HashMap<u32, u32>) -> u32,
-) -> u32 {
-    let mut costs = vec![0; *crabs.iter().max().unwrap() as usize];
-
-    for (i, cost) in costs.iter_mut().enumerate() {
-        *cost = cost_fn(i, crab_map);
-    }
-
-    *costs.iter().min().unwrap()
-}
-
-fn cost(position: usize, crab_map: &HashMap<u32, u32>) -> u32 {
-    let mut cost = 0;
-
-    for (pos, amt) in crab_map.iter() {
-        cost += (position as i32 - *pos as i32).abs() as u32 * amt;
-    }
-
-    cost
-}
-
-fn cost_two(position: usize, crab_map: &HashMap<u32, u32>) -> u32 {
-    let mut cost = 0;
-
-    for (pos, amt) in crab_map.iter() {
-        // geometric series summing: Let the compiler do the work
-        cost += (0..=(position as i32 - *pos as i32).abs()).sum::<i32>() as u32 * amt;
-    }
-
-    cost
 }
