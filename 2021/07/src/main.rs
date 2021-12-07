@@ -16,7 +16,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // part two is the same but need the derivative of the gauss cost
 
-    crabs.sort();
+    crabs.sort_unstable();
 
     let best = crabs[crabs.len() / 2];
     let part_one: i32 = crabs.iter().map(|pos| (pos - best).abs()).sum();
