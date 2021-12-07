@@ -15,17 +15,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     let gauss_sum = |n| (n * (n + 1)) / 2;
 
     let part_one: i32 = (min_crab..=max_crab)
-        .map(|dest| crabs.iter().map(|position| (position - dest).abs()).sum())
+        .map(|dest| crabs.iter().map(|pos| (pos - dest).abs()).sum())
         .min()
         .unwrap();
 
     let part_two: i32 = (min_crab..=max_crab)
-        .map(|dest| {
-            crabs
-                .iter()
-                .map(|position| gauss_sum((position - dest).abs()))
-                .sum()
-        })
+        .map(|dest| crabs.iter().map(|pos| gauss_sum((pos - dest).abs())).sum())
         .min()
         .unwrap();
 
