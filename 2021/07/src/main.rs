@@ -12,7 +12,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let min_crab = *crabs.iter().min().unwrap();
     let max_crab = *crabs.iter().max().unwrap();
 
-    let geom_sum = |n| (n * (n + 1)) / 2;
+    let gauss_sum = |n| (n * (n + 1)) / 2;
 
     let part_one: i32 = (min_crab..=max_crab)
         .map(|dest| crabs.iter().map(|position| (position - dest).abs()).sum())
@@ -23,7 +23,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .map(|dest| {
             crabs
                 .iter()
-                .map(|position| geom_sum((position - dest).abs()))
+                .map(|position| gauss_sum((position - dest).abs()))
                 .sum()
         })
         .min()
