@@ -1,0 +1,8 @@
+{
+    "cSpell.words": [
+        "nums"
+    ],
+    "rust-analyzer.runnables.cargoExtraArgs": [
+        "--release"
+    ]
+}
