@@ -1,5 +1,5 @@
 [package]
-name = "template"
+name = "day2"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,6 +8,3 @@ edition = "2021"
 [dependencies]
 itertools = "0.10.5"
 
-[profile.release]
-panic = "abort"
-strip = "symbols"

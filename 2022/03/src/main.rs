@@ -1,25 +1,21 @@
+use aoc::input;
 use itertools::Itertools;
-use std::{collections::HashSet, fs::File, io::Read};
+use std::collections::HashSet;
 
 fn main() {
-    let mut file = File::open("input").expect("Failed to open input.txt");
-    let mut input = String::new();
-    file.read_to_string(&mut input)
-        .expect("Failed to read input.txt");
-
-    let part_one = input
+    let part_one = input()
         .lines()
         .map(|line| {
             let middle = line.len() / 2;
-            let (left, right) = line.split_at(middle);
-            let left_set = left.chars().collect::<HashSet<_>>();
-            let right_set = right.chars().collect::<HashSet<_>>();
-            let common_char = *left_set.intersection(&right_set).next().unwrap();
-            score(common_char)
+            let (a, b) = line.split_at(middle);
+            let a = a.chars().collect::<HashSet<_>>();
+            let b = b.chars().collect::<HashSet<_>>();
+            let common = *a.intersection(&b).next().unwrap();
+            score(common)
         })
-        .sum::<usize>();
+        .sum::<u32>();
 
-    let part_two = input
+    let part_two = input()
         .lines()
         .chunks(3)
         .into_iter()
@@ -28,20 +24,20 @@ fn main() {
             let a = a.chars().collect::<HashSet<_>>();
             let b = b.chars().collect::<HashSet<_>>();
             let c = c.chars().collect::<HashSet<_>>();
-            let common: HashSet<_> = a.intersection(&b).cloned().collect();
+            let common = a.intersection(&b).cloned().collect::<HashSet<_>>();
             let common = *common.intersection(&c).next().unwrap();
             score(common)
         })
-        .sum::<usize>();
+        .sum::<u32>();
 
     println!("{:?}", part_one);
     println!("{:?}", part_two);
 }
 
-fn score(c: char) -> usize {
+fn score(c: char) -> u32 {
     match c {
-        'a'..='z' => c as usize - 'a' as usize + 1,
-        'A'..='Z' => c as usize - 'A' as usize + 27,
+        'a'..='z' => c as u32 - 'a' as u32 + 1,
+        'A'..='Z' => c as u32 - 'A' as u32 + 27,
         _ => panic!("Invalid character"),
     }
 }

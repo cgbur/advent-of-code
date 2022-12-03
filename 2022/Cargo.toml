@@ -1,0 +1,5 @@
+[workspace]
+members = ["aoc", "01", "02", "03"]
+
+[profile.dev]
+opt-level = 2
