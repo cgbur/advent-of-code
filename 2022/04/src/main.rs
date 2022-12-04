@@ -1,7 +1,5 @@
-use std::str::FromStr;
-
 use aoc::input;
-use itertools::Itertools;
+use std::str::FromStr;
 
 #[derive(Debug, Clone, Copy)]
 struct Range {
