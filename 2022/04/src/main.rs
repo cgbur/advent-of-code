@@ -1,6 +1,27 @@
 use aoc::input;
 use std::str::FromStr;
 
+fn main() {
+    let part_one = input()
+        .lines()
+        .filter(|line| {
+            let WorkOrder(left, right) = line.parse().unwrap();
+            left.contains(right) || right.contains(left)
+        })
+        .count();
+
+    let part_two = input()
+        .lines()
+        .filter(|line| {
+            let WorkOrder(left, right) = line.parse().unwrap();
+            left.overlaps(right)
+        })
+        .count();
+
+    println!("{:?}", part_one);
+    println!("{:?}", part_two);
+}
+
 #[derive(Debug, Clone, Copy)]
 struct Range {
     start: u32,
@@ -38,25 +59,4 @@ impl FromStr for WorkOrder {
         let (left, right) = s.split_once(',').unwrap();
         Ok(WorkOrder(left.parse().unwrap(), right.parse().unwrap()))
     }
-}
-
-fn main() {
-    let part_one = input()
-        .lines()
-        .filter(|line| {
-            let WorkOrder(left, right) = line.parse().unwrap();
-            left.contains(right) || right.contains(left)
-        })
-        .count();
-
-    let part_two = input()
-        .lines()
-        .filter(|line| {
-            let WorkOrder(left, right) = line.parse().unwrap();
-            left.overlaps(right)
-        })
-        .count();
-
-    println!("{:?}", part_one);
-    println!("{:?}", part_two);
 }
