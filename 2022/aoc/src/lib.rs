@@ -1,4 +1,3 @@
-use memchr::memmem::{find_iter, FindIter};
 use once_cell;
 use std::{fs::File, io::Read};
 
