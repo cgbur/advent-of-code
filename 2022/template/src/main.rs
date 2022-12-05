@@ -1,4 +1,4 @@
-use aoc::input;
+use aoc::{input, Aoc};
 use itertools::Itertools;
 
 fn main() {

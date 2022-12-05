@@ -1,22 +1,17 @@
+use aoc::input;
 use itertools::Itertools;
-use std::{fs::File, io::Read};
 
 fn main() {
-    let mut file = File::open("input").expect("Failed to open input.txt");
-    let mut buf = String::new();
-    file.read_to_string(&mut buf)
-        .expect("Failed to read input.txt");
-
-    let score_1 = buf
-        .split("\n")
+    let score_1 = input()
+        .lines()
         .map(|elf| {
             let (op, me) = elf.split(" ").collect_tuple().unwrap();
             rock_paper_sciccors(op, me)
         })
         .sum::<u32>();
 
-    let score_2 = buf
-        .split("\n")
+    let score_2 = input()
+        .lines()
         .map(|elf| {
             let (op, me) = elf.split(" ").collect_tuple().unwrap();
             rock_paper_sciccors_2(op, me)

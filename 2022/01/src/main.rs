@@ -1,9 +1,9 @@
-use aoc::input;
+use aoc::{input, Aoc};
 use itertools::Itertools;
 
 fn main() {
     let scores = input()
-        .split("\n\n")
+        .groups()
         .map(|elf| {
             elf.lines()
                 .map(|num| num.parse::<u32>().unwrap())
