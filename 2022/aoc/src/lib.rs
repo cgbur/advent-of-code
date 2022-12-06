@@ -1,4 +1,3 @@
-use once_cell;
 use std::{fs::File, io::Read};
 
 static INPUT: once_cell::sync::Lazy<String> = once_cell::sync::Lazy::new(|| {

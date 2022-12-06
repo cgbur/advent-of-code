@@ -71,7 +71,7 @@ fn rock_paper_sciccors_2(opponent: &str, me: &str) -> u32 {
         },
     };
 
-    let score = match me {
+    (match me {
         Winner::Me => 6,
         Winner::Opponent => 0,
         Winner::Tie => 3,
@@ -79,9 +79,7 @@ fn rock_paper_sciccors_2(opponent: &str, me: &str) -> u32 {
         Choice::Rock => 1,
         Choice::Paper => 2,
         Choice::Scissors => 3,
-    };
-
-    score
+    })
 }
 
 fn rock_paper_sciccors(opponent: &str, me: &str) -> u32 {
@@ -110,7 +108,7 @@ fn rock_paper_sciccors(opponent: &str, me: &str) -> u32 {
         _ => Winner::Tie,
     };
 
-    let score = match winner {
+    (match winner {
         Winner::Me => 6,
         Winner::Opponent => 0,
         Winner::Tie => 3,
@@ -118,7 +116,5 @@ fn rock_paper_sciccors(opponent: &str, me: &str) -> u32 {
         Choice::Rock => 1,
         Choice::Paper => 2,
         Choice::Scissors => 3,
-    };
-
-    score
+    })
 }
