@@ -5,7 +5,7 @@ fn main() {
     let score_1 = input()
         .lines()
         .map(|elf| {
-            let (op, me) = elf.split(" ").collect_tuple().unwrap();
+            let (op, me) = elf.split(' ').collect_tuple().unwrap();
             rock_paper_sciccors(op, me)
         })
         .sum::<u32>();
@@ -13,7 +13,7 @@ fn main() {
     let score_2 = input()
         .lines()
         .map(|elf| {
-            let (op, me) = elf.split(" ").collect_tuple().unwrap();
+            let (op, me) = elf.split(' ').collect_tuple().unwrap();
             rock_paper_sciccors_2(op, me)
         })
         .sum::<u32>();
