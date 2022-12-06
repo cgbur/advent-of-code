@@ -5,8 +5,22 @@ use std::collections::HashMap;
 fn main() {
     println!("part one: {}", fancy(input(), 4));
     println!("part one: {}", fast(input(), 4));
+    println!("part one: {}", short(input(), 4));
+
     println!("part two: {}", fancy(input(), 14));
     println!("part two: {}", fast(input(), 14));
+    println!("part two: {}", short(input(), 14));
+}
+
+fn short(input: &str, size: usize) -> usize {
+    input
+        .as_bytes()
+        .windows(size)
+        .enumerate()
+        .find(|(_, chars)| chars.iter().tuple_combinations().all(|(a, b)| a != b))
+        .unwrap()
+        .0
+        + size
 }
 
 fn fancy(input: &str, size: usize) -> usize {
