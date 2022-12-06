@@ -24,7 +24,6 @@ fn main() {
 
     let stacks_clone = stacks.clone();
     for command in commands.lines() {
-        // extract 3 numbers from th eline
         let (count, from, to) = command
             .split_whitespace()
             .filter_map(|s| s.parse::<usize>().ok())
@@ -41,7 +40,6 @@ fn main() {
 
     let mut stacks = stacks_clone;
     for command in commands.lines() {
-        // extract 3 numbers from th eline
         let (count, from, to) = command
             .split_whitespace()
             .filter_map(|s| s.parse::<usize>().ok())
@@ -54,6 +52,7 @@ fn main() {
         let stack_len = stacks[to - 1].len();
         stacks[to - 1][stack_len - count..].reverse();
     }
+
     let part_two = stacks.iter().map(|s| s.last().unwrap()).join("");
     println!("Part two: {}", part_two);
 }
