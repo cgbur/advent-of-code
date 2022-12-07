@@ -21,7 +21,7 @@ fn main() {
     }));
     let mut current_dir = file_system.clone();
     for line in input().lines() {
-        if line.starts_with("$ ") {
+        if line.starts_with("$") {
             let command = line.split_whitespace().skip(1).collect_vec();
             match *command.first().unwrap() {
                 "cd" => match command[1] {
