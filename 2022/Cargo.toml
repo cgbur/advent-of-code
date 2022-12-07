@@ -1,5 +1,5 @@
 [workspace]
-members = ["aoc", "01", "02", "03", "04", "05", "06"]
+members = ["aoc", "01", "02", "03", "04", "05", "06", "07"]
 
 [profile.dev]
 opt-level = 2
