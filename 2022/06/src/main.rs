@@ -16,10 +16,8 @@ fn short(input: &str, size: usize) -> usize {
     input
         .as_bytes()
         .windows(size)
-        .enumerate()
-        .find(|(_, chars)| chars.iter().tuple_combinations().all(|(a, b)| a != b))
+        .position(|w| w.iter().all_unique())
         .unwrap()
-        .0
         + size
 }
 
