@@ -1,6 +1,6 @@
-use aoc::{input, Aoc};
+use aoc::input;
 use itertools::Itertools;
-use std::{cell::RefCell, collections::HashMap, rc::Rc};
+use std::{cell::RefCell, rc::Rc};
 
 #[derive(Debug)]
 struct Node {
@@ -118,7 +118,7 @@ fn main() {
     let amount_to_free = REQUIRED_FREE_SPACE - unused_space;
 
     let mut smallest_dir: Option<Rc<RefCell<Node>>> = None;
-    let mut stack = vec![file_system.clone()];
+    let mut stack = vec![file_system];
     while let Some(node) = stack.pop() {
         if node.borrow().is_dir {
             if node.borrow().size >= amount_to_free {
