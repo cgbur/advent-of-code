@@ -11,3 +11,11 @@ itertools = "0.10.5"
 path = "src/rusty-zig.rs"
 name = "rusty-zig"
 
+[[bin]]
+path = "src/streaming.rs"
+name = "streaming"
+
+[[bin]]
+path = "src/streaming_three.rs"
+name = "streaming_three"
+
